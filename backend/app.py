@@ -227,6 +227,18 @@ def answer():
 
 
 # ---------------------------------------------------------
+# Error handler: return the reason as JSON instead of a bare 500 page
+# ---------------------------------------------------------
+
+@rag_api.errorhandler(Exception)
+def handle_error(error):
+    """Log the full error and send a readable message back to the caller."""
+    import traceback
+    traceback.print_exc()
+    return jsonify({"error": f"{type(error).__name__}: {error}"}), 500
+
+
+# ---------------------------------------------------------
 # Run the Flask application
 # ---------------------------------------------------------
 
