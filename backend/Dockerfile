@@ -14,6 +14,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 ENV HF_HOME=/app/huggingface
 
+# Show Python output (including errors) immediately in `docker logs`
+ENV PYTHONUNBUFFERED=1
+
 # Download the model at build time
 RUN python -c "\
 from langchain_huggingface import HuggingFaceEmbeddings; \
@@ -27,4 +30,4 @@ HuggingFaceEmbeddings( \
 ENV TRANSFORMERS_OFFLINE=1
 ENV HF_HUB_OFFLINE=1
 
-CMD ["gunicorn", "-w", "1", "--timeout", "120", "-b", "0.0.0.0:7860", "app:rag_api"]
+CMD ["gunicorn", "-w", "1", "--timeout", "120", "--access-logfile", "-", "--error-logfile", "-", "-b", "0.0.0.0:7860", "app:rag_api"]
