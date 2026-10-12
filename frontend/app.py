@@ -33,7 +33,7 @@ with st.sidebar:
         "k (chunks to retrieve)",
         min_value=1,
         max_value=10,
-        value=2,
+        value=5,
         help="Number of relevant chunks fetched from the vector store."
     )
 
@@ -139,9 +139,14 @@ if st.button("Submit", type="primary"):
                             st.write(chunk)
 
             else:
+                # Show the reason returned by the backend, if any
+                try:
+                    reason = response.json().get("error", "")
+                except ValueError:
+                    reason = response.text[:300]
                 st.error(
                     f"Unable to get a response from the RAG API. "
-                    f"Status code: {response.status_code}"
+                    f"Status code: {response.status_code}. {reason}"
                 )
 
         except requests.exceptions.RequestException:
